@@ -15,11 +15,11 @@ const thoughtSchema = new Schema(
       default: Date.now,
       get: (newDate) => newDate.toLocaleDateString(),
     },
-   username: {
+    username: {
       type: String,
       required: true,
     },
-   
+
     reactions: [reactionSchema],
   },
   {
@@ -31,14 +31,14 @@ const thoughtSchema = new Schema(
 );
 
 // Create a virtual property `reactions` that gets the amount of reactions per video
-videoSchema
+thoughtSchema
   .virtual("reactionCount")
   // Getter
   .get(function () {
     return this.reactions.length;
   });
 
-// Initialize our Video model
-const Thought = model("video", videoSchema);
+// Initialize our thought model
+const Thought = model("thought", thoughtSchema);
 
 module.exports = Thought;
