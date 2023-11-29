@@ -1,17 +1,19 @@
 const User = require("../models/User");
-const Thought = require("..//models/Thought")
+const Thought = require("../models/Thought")
+
 module.exports = {
   async getUsers(req, res) {
-    try {
-      const users = await User.find();
+    // try {
+      const users = await User.find().populate("thoughts")
       res.json(users);
-    } catch (err) {
-      res.status(500).json(err);
-    }
-  },
+  //   } catch (err) {
+  //     res.status(500).json(err);
+  //   }
+},
   async getSingleUser(req, res) {
     try {
-      const user = await User.findOne({ _id: req.params.userId }).select(
+      const user = await User.findOne({ _id: req.params.userId }).populate("thoughts")
+      .select(
         "-__v"
       );
 
@@ -24,7 +26,7 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  // create a new user
+  // create a new user or remove friend
   async createUser(req, res) {
     try {
       const dbUserData = await User.create(req.body);
@@ -53,11 +55,7 @@ module.exports = {
   },
   async deleteUser(req, res) {
     try {
-      const thought = await Thought.findOneAndRemove({ usrname: req.body.username });
-
-      if (!thought) {
-        return res.status(404).json({ message: 'No thought with this id!' });
-      }
+      const thought = await Thought.findOneAndRemove({ username: req.body.username });
 
       const user = await User.findOneAndRemove(
         { _id: req.params.userId },
@@ -67,10 +65,10 @@ module.exports = {
       if (!user) {
         return res
           .status(404)
-          .json({ message: 'user created but no user with this id!' });
+          .json({ message: 'User created but no user with this id!' });
       }
 
-      res.json({ message: 'user successfully deleted!' });
+      res.json({ message: 'User successfully deleted!' });
     } catch (err) {
       res.status(500).json(err);
     }
@@ -100,7 +98,7 @@ module.exports = {
 
       const user = await User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $pull: { friendss: req.params.friendId } },
+        { $pull: { friends: req.params.friendId } },
         { new: true }
       );
 

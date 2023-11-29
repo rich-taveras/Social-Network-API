@@ -11,7 +11,9 @@ const {
 
 // /api/users
 //http://localhost:3001/api/users
-router.route('/').get(getUsers).post(createUser);
+router.route('/')
+.get(getUsers)
+.post(createUser);
 
 // /api/users/:userId
 router.route('/:userId')
@@ -20,7 +22,7 @@ router.route('/:userId')
 .delete(deleteUser);
 
 ///api/users/:userId/friends/:friendId
-router.route('/:userId/friens/:friendId')
+router.route('/:userId/friends/:friendId')
 .post(addFriend)
 .delete(removeFriend)
 
